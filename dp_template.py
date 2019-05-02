@@ -82,8 +82,8 @@ for i in range(0, len(seq1)):
             scoringMatrix[j,i] = score
             backtrackingMatrix[j,i] = direction    
 backtrackingMatrix[0,0] = 'END'
-seq1 = seq1[1:]
-seq2 = seq2[1:]
+seq1 = list(seq1[1:])
+seq2 = list(seq2[1:])
 alignment1, alignment2 = '', ''
 y,x = backtrackingMatrix.shape
 y,x = y-1, x-1
@@ -93,19 +93,15 @@ while backtrackingMatrix[y,x] != 'END':
     coords=backtrackingMatrix[y,x]
     if coords == 'D':
         y, x = y-1, x-1
-        alignment1 += seq1[-1]
-        seq1 = seq1[:-1]
-        alignment2 += seq2[-1]
-        seq2 = seq2[:-1]
+        alignment1 += seq1.pop()
+        alignment2 += seq2.pop()
     elif coords == 'U':
         y -= 1
         alignment1 += '-'
-        alignment2 += seq2[-1]
-        seq2 = seq2[:-1]
+        alignment2 += seq2.pop()
     else:
         x -= 1
-        alignment1 += seq1[-1]
-        seq1 = seq1[:-1]
+        alignment1 += seq1.pop()
         alignment2 += '-'
 best_alignment.append(alignment1[::-1])
 best_alignment.append(alignment2[::-1])    
