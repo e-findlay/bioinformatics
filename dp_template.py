@@ -56,41 +56,48 @@ start = time.time()
 # To work with the printing functions below the best alignment should be called best_alignment and its score should be called best_score. 
 seq1 = '-{}'.format(seq1)
 seq2 = '-{}'.format(seq2)
-scoringMatrix = np.zeros((len(seq2), len(seq1)))
-backtrackingMatrix = np.empty((len(seq2), len(seq1)), dtype=object)
+scoringMatrix = []
+backtrackingMatrix = []
+counter=0
+for i in range(len(seq1)):
+    scoringMatrix.append([])
+    backtrackingMatrix.append([])
+    for j in range(len(seq2)):
+        scoringMatrix[counter].append(0)
+        backtrackingMatrix[counter].append('')
+    counter+=1
 scoreValues = {'A': 4, 'C': 3, 'G': 2, 'T': 1}
 for i in range(0, len(seq1)):
     for j in range(0, len(seq2)):
         if j == 0:
-            scoringMatrix[0,i], backtrackingMatrix[0,i] = -2*i, 'L'
+            scoringMatrix[i][0], backtrackingMatrix[i][0] = -2*i, 'L'
         elif i == 0:
-            scoringMatrix[j,0], backtrackingMatrix[j,0] = -2*j, 'U'
+            scoringMatrix[0][j], backtrackingMatrix[0][j] = -2*j, 'U'
         else:
             if seq1[i] == seq2[j]:
-                score = scoreValues[seq1[i]] + scoringMatrix[j-1, i-1]
+                score = scoreValues[seq1[i]] + scoringMatrix[i-1][j-1]
             else:
-                score = -3 + scoringMatrix[j-1, i-1]
+                score = -3 + scoringMatrix[i-1][j-1]
             direction = 'D'
-            next_score = scoringMatrix[j,i-1] -2
-            if next_score > score:
-                score = next_score
-                direction = 'L'
-            next_score =  scoringMatrix[j-1,i] -2
+            next_score = scoringMatrix[i][j-1] -2
             if next_score > score:
                 score = next_score
                 direction = 'U'
-            scoringMatrix[j,i] = score
-            backtrackingMatrix[j,i] = direction    
-backtrackingMatrix[0,0] = 'END'
+            next_score =  scoringMatrix[i-1][j] -2
+            if next_score > score:
+                score = next_score
+                direction = 'L'
+            scoringMatrix[i][j] = score
+            backtrackingMatrix[i][j] = direction    
+backtrackingMatrix[0][0] = 'END'
 seq1 = list(seq1[1:])
 seq2 = list(seq2[1:])
 alignment1, alignment2 = '', ''
-y,x = backtrackingMatrix.shape
-y,x = y-1, x-1
-best_score = scoringMatrix[-1,-1]
+y,x = -1, -1
+best_score = scoringMatrix[-1][-1]
 best_alignment = []
-while backtrackingMatrix[y,x] != 'END':
-    coords=backtrackingMatrix[y,x]
+while backtrackingMatrix[x][y] != 'END':
+    coords=backtrackingMatrix[x][y]
     if coords == 'D':
         y, x = y-1, x-1
         alignment1 += seq1.pop()
