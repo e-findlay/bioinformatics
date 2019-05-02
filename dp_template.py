@@ -59,7 +59,6 @@ seq2 = '-{}'.format(seq2)
 scoringMatrix = np.zeros((len(seq2), len(seq1)))
 backtrackingMatrix = np.empty((len(seq2), len(seq1)), dtype=object)
 scoreValues = {'A': 4, 'C': 3, 'G': 2, 'T': 1}
-directionValues = {1: 'D', 2: 'L', 3: 'U'}
 for i in range(0, len(seq1)):
     for j in range(0, len(seq2)):
         if j == 0:
@@ -71,17 +70,17 @@ for i in range(0, len(seq1)):
                 score = scoreValues[seq1[i]] + scoringMatrix[j-1, i-1]
             else:
                 score = -3 + scoringMatrix[j-1, i-1]
-            direction = 1
+            direction = 'D'
             next_score = scoringMatrix[j,i-1] -2
             if next_score > score:
                 score = next_score
-                direction = 2
+                direction = 'L'
             next_score =  scoringMatrix[j-1,i] -2
             if next_score > score:
                 score = next_score
-                direction = 3
+                direction = 'U'
             scoringMatrix[j,i] = score
-            backtrackingMatrix[j,i] = directionValues[direction]    
+            backtrackingMatrix[j,i] = direction    
 backtrackingMatrix[0,0] = 'END'
 seq1 = seq1[1:]
 seq2 = seq2[1:]
